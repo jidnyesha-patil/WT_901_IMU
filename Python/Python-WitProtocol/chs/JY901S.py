@@ -25,14 +25,14 @@ def readConfig(device):
     """
     tVals = device.readReg(0x02,3)  #读取数据内容、回传速率、通讯速率   Read data content, return rate, communication rate
     if (len(tVals)>0):
-        print("返回结果：" + str(tVals))
+        print("Result" + str(tVals))
     else:
-        print("无返回")
+        print("No result")
     tVals = device.readReg(0x23,2)  #读取安装方向、算法  Read the installation direction and algorithm
     if (len(tVals)>0):
-        print("返回结果：" + str(tVals))
+        print("Result：" + str(tVals))
     else:
-        print("无返回")
+        print("No result")
 
 def setConfig(device):
     """

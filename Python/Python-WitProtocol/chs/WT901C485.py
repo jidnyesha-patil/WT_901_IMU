@@ -12,72 +12,72 @@ from lib.data_processor.roles.jy901s_dataProcessor import JY901SDataProcessor
 from lib.protocol_resolver.roles.protocol_485_resolver import Protocol485Resolver
 
 welcome = """
-欢迎使用维特智能示例程序    Welcome to the Wit-Motoin sample program
+Welcome to the Wit-Motoin sample program
 """
-_writeF = None                    #写文件  Write file
-_IsWriteF = False                 #写文件标识    Write file identification
+_writeF = None                    #  Write file
+_IsWriteF = False                 # Write file identification
 def readConfig(device):
     """
     读取配置信息示例    Example of reading configuration information
     :param device: 设备模型 Device model
     :return:
     """
-    tVals = device.readReg(0x02,3)  #读取数据内容、回传速率、通讯速率   Read data content, return rate, communication rate
+    tVals = device.readReg(0x02,3)  # Read data content, return rate, communication rate
     if (len(tVals)>0):
-        print("返回结果：" + str(tVals))
+        print("Result：" + str(tVals))
     else:
-        print("无返回")
-    tVals = device.readReg(0x23,2)  #读取安装方向、算法  Read the installation direction and algorithm
+        print("No Result")
+    tVals = device.readReg(0x23,2)  # Read the installation direction and algorithm
     if (len(tVals)>0):
-        print("返回结果：" + str(tVals))
+        print("Result：" + str(tVals))
     else:
-        print("无返回")
+        print("No Result")
 
 def setConfig(device):
     """
-    设置配置信息示例    Example setting configuration information
-    :param device: 设备模型 Device model
+    Example setting configuration information
+    :param device: Device model
     :return:
     """
-    device.unlock()                # 解锁 unlock
-    time.sleep(0.1)                # 休眠100毫秒    Sleep 100ms
-    device.writeReg(0x03, 6)       # 设置回传速率为10HZ    Set the transmission back rate to 10HZ
-    time.sleep(0.1)                # 休眠100毫秒    Sleep 100ms
-    device.writeReg(0x23, 0)       # 设置安装方向:水平、垂直   Set the installation direction: horizontal and vertical
-    time.sleep(0.1)                # 休眠100毫秒    Sleep 100ms
-    device.writeReg(0x24, 0)       # 设置安装方向:九轴、六轴   Set the installation direction: nine axis, six axis
-    time.sleep(0.1)                # 休眠100毫秒    Sleep 100ms
-    device.save()                  # 保存 Save
+    device.unlock()                #unlock
+    time.sleep(0.1)                #Sleep 100ms
+    device.writeReg(0x03, 6)       #Set the transmission back rate to 10HZ
+    time.sleep(0.1)                #Sleep 100ms
+    device.writeReg(0x23, 0)       # Set the installation direction: horizontal and vertical
+    time.sleep(0.1)                #Sleep 100ms
+    device.writeReg(0x24, 0)       #Set the installation direction: nine axis, six axis
+    time.sleep(0.1)                #Sleep 100ms
+    device.save()                  #Save
 
 def AccelerationCalibration(device):
     """
-    加计校准    Acceleration calibration
-    :param device: 设备模型 Device model
+        Acceleration calibration
+    :param device:  Device model
     :return:
     """
     device.AccelerationCalibration()                 # Acceleration calibration
-    print("加计校准结束")
+    print("End of acceleration calibration")
 
 def FiledCalibration(device):
     """
-    磁场校准    Magnetic field calibration
-    :param device: 设备模型 Device model
+        Magnetic field calibration
+    :param device:  Device model
     :return:
     """
     device.BeginFiledCalibration()                   # 开始磁场校准   Starting field calibration
-    if input("请分别绕XYZ轴慢速转动一圈，三轴转圈完成后，结束校准（Y/N)？").lower()=="y":
+    if input("Please rotate around axis XYZ at a slow speed one time, and finish the calibration after completing the rotation of three axis（Y/N)？").lower()=="y":
         device.EndFiledCalibration()                 # 结束磁场校准   End field calibration
-        print("结束磁场校准")
+        print("End field calibration")
 
 def startRecord():
     """
-    开始记录数据  Start recording data
+      Start recording data
     :return:
     """
     global _writeF
     global _IsWriteF
-    _writeF = open(str(datetime.datetime.now().strftime('%Y%m%d%H%M%S')) + ".txt", "w")    #新建一个文件
-    _IsWriteF = True                                                                        #标记写入标识
+    _writeF = open(str(datetime.datetime.now().strftime('%Y%m%d%H%M%S')) + ".txt", "w")    #New file
+    _IsWriteF = True                                                                        #Write mark
     Tempstr = "Chiptime"
     Tempstr +=  "\tax(g)\tay(g)\taz(g)"
     Tempstr += "\twx(deg/s)\twy(deg/s)\twz(deg/s)"
@@ -86,18 +86,18 @@ def startRecord():
     Tempstr += "\tmagx\tmagy\tmagz"
     Tempstr += "\r\n"
     _writeF.write(Tempstr)
-    print("开始记录数据")
+    print("Start recording data")
 
 def endRecord():
     """
-    结束记录数据  End record data
+     End record data
     :return:
     """
     global _writeF
     global _IsWriteF
-    _IsWriteF = False             # 标记不可写入标识    Tag cannot write the identity
-    _writeF.close()               #关闭文件     Close file
-    print("结束记录数据")
+    _IsWriteF = False             #     Tag cannot write the identity
+    _writeF.close()               #     Close file
+    print("End recording data")
 
 def onUpdate(deviceModel):
     """
@@ -105,12 +105,12 @@ def onUpdate(deviceModel):
     :param deviceModel: 设备模型    Device model
     :return:
     """
-    print("芯片时间:" + str(deviceModel.getDeviceData("Chiptime"))
-         , " 温度:" + str(deviceModel.getDeviceData("temperature"))
-         , " 加速度：" + str(deviceModel.getDeviceData("accX")) +","+  str(deviceModel.getDeviceData("accY")) +","+ str(deviceModel.getDeviceData("accZ"))
-         ,  " 角速度:" + str(deviceModel.getDeviceData("gyroX")) +","+ str(deviceModel.getDeviceData("gyroY")) +","+ str(deviceModel.getDeviceData("gyroZ"))
-         , " 角度:" + str(deviceModel.getDeviceData("angleX")) +","+ str(deviceModel.getDeviceData("angleY")) +","+ str(deviceModel.getDeviceData("angleZ"))
-        , " 磁场:" + str(deviceModel.getDeviceData("magX")) +","+ str(deviceModel.getDeviceData("magY"))+","+ str(deviceModel.getDeviceData("magZ"))
+    print("Time:" + str(deviceModel.getDeviceData("Chiptime"))
+         , " Temp:" + str(deviceModel.getDeviceData("temperature"))
+         , " Acc：" + str(deviceModel.getDeviceData("accX")) +","+  str(deviceModel.getDeviceData("accY")) +","+ str(deviceModel.getDeviceData("accZ"))
+         ,  " Gyro:" + str(deviceModel.getDeviceData("gyroX")) +","+ str(deviceModel.getDeviceData("gyroY")) +","+ str(deviceModel.getDeviceData("gyroZ"))
+         , " Angle:" + str(deviceModel.getDeviceData("angleX")) +","+ str(deviceModel.getDeviceData("angleY")) +","+ str(deviceModel.getDeviceData("angleZ"))
+        , " Mag:" + str(deviceModel.getDeviceData("magX")) +","+ str(deviceModel.getDeviceData("magY"))+","+ str(deviceModel.getDeviceData("magZ"))
           )
     if (_IsWriteF):    #记录数据    Record data
         Tempstr = " " + str(deviceModel.getDeviceData("Chiptime"))
@@ -135,25 +135,25 @@ if __name__ == '__main__':
 
     print(welcome)
     device = deviceModel.DeviceModel(
-        "我的JY901",
+        "My JY901",
         Protocol485Resolver(),
         JY901SDataProcessor(),
         "51_0"
     )
     device.ADDR = 0x50                                       #设置传感器ID   Setting the Sensor ID
     if (platform.system().lower() == 'linux'):
-        device.serialConfig.portName = "/dev/ttyUSB0"        #设置串口  Set serial port
+        device.serialConfig.portName = "/dev/ttyS0"        #设置串口  Set serial port
     else:
         device.serialConfig.portName = "COM82"               #设置串口  Set serial port
     device.serialConfig.baud = 9600                          #设置波特率 Set baud rate
     device.openDevice()                                      #打开串口  Open serial port
     readConfig(device)                                       #读取配置信息    Read configuration information
     device.dataProcessor.onVarChanged.append(onUpdate)       #数据更新事件    Data update event
+    onUpdate(device)
+    # startRecord()                                            # 开始记录数据   Start recording data
+    # t = threading.Thread(target=LoopReadThead, args=(device,))  #开启一个线程读取数据 Start a thread to read data
+    # t.start()
 
-    startRecord()                                            # 开始记录数据   Start recording data
-    t = threading.Thread(target=LoopReadThead, args=(device,))  #开启一个线程读取数据 Start a thread to read data
-    t.start()
-
-    input()
-    device.closeDevice()
-    endRecord()                             # 结束记录数据    End record data
+    # input()
+    # device.closeDevice()
+    # endRecord()                             # 结束记录数据    End record data
